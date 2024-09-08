@@ -1,0 +1,23 @@
+[
+    {
+        "slug": "unkey",
+        "title": "Project One",
+        "description": "This is the first project. It demonstrates the use of JSON to store project data.",
+        "date": "2024-09-01",
+        "published": true
+    },
+    {
+        "slug": "planetfall",
+        "title": "Project Two",
+        "description": "This is the second project. It showcases how to integrate Contentlayer with Next.js.",
+        "date": "2024-09-05",
+        "published": true
+    },
+    {
+        "slug": "highstorm",
+        "title": "Project Two",
+        "description": "This is the second project. It showcases how to integrate Contentlayer with Next.js.",
+        "date": "2024-09-05",
+        "published": true
+    }
+]

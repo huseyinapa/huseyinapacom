@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  nginx:
+    build:
+      context: ./
+      dockerfile: Dockerfile.nginx
+    image: nginx:latest
+    hostname: nginx
+    container_name: huseyinapa_nginx
+    networks:
+      - huseyinapa_net
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf.dev:/etc/nginx/nginx.conf.dev
+      - ./ssl:/etc/nginx/ssl/huseyinapa
+    command: /bin/bash -c "envsubst < /etc/nginx/nginx.conf.dev > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+    depends_on:
+      - service
+
+  service:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: node:latest
+    volumes:
+      - ./:/usr/huseyinapa/web
+      - /usr/huseyinapa/node_modules
+    hostname: service
+    container_name: huseyinapa_web
+    networks:
+      - huseyinapa_net
+    ports:
+      - "3200:80"
+    restart: always
+
+networks:
+  huseyinapa_net:
+    driver: bridge

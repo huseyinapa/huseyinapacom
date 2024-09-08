@@ -1,0 +1,7 @@
+FROM nginx:latest
+
+# Nginx konfigürasyon dosyasını container içine kopyala
+COPY ./nginx.conf.dev /etc/nginx/nginx.conf.dev
+
+# SSL sertifikalarını container içine kopyala
+COPY ./ssl /etc/nginx/ssl/huseyinapa

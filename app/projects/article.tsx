@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Eye, View } from "lucide-react";
+import { Eye } from "lucide-react";
 
 // Project interface with only the fields you need
 interface Project {

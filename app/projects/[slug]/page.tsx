@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { Header } from "./header";
 import "./mdx.css";
 import { ReportView } from "./view";
-import { JsonComponent } from "@/app/components/json";
+// import { JsonComponent } from "@/app/components/json";
 
 const redis = new Redis({
   url: "https://crack-mutt-62281.upstash.io",

@@ -45,7 +45,7 @@ export default async function ProjectsPage() {
   }, {} as Record<string, number>);
 
   const featured = allProjects.find(
-    (project: Project) => project.slug === "unkey"
+    (project: Project) => project.slug === "spyverse"
   )!;
   const top2 = allProjects.find(
     (project: Project) => project.slug === "planetfall"

@@ -1,3 +1,5 @@
+"use client"; // Bu satırı ekleyin
+
 import { motion, useMotionTemplate, useSpring } from "framer-motion";
 import { PropsWithChildren } from "react";
 

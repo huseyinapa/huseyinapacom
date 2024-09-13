@@ -1,7 +1,11 @@
 import { Redis } from "@upstash/redis";
 import { NextRequest, NextResponse } from "next/server";
 
-const redis = Redis.fromEnv();
+const redis = new Redis({
+  url: "https://crack-mutt-62281.upstash.io",
+  token: "AfNJAAIjcDEwNjE3OTFkOTc0ZTc0MjRiYjM4ODE5YjFjZDU0YmZmNHAxMA",
+});
+
 export const config = {
   runtime: "edge",
 };
@@ -27,7 +31,7 @@ export default async function incr(req: NextRequest): Promise<NextResponse> {
     // Hash the IP in order to not store it directly in your db.
     const buf = await crypto.subtle.digest(
       "SHA-256",
-      new TextEncoder().encode(ip),
+      new TextEncoder().encode(ip)
     );
     const hash = Array.from(new Uint8Array(buf))
       .map((b) => b.toString(16).padStart(2, "0"))

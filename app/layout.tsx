@@ -34,11 +34,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "huseyinapa.com",
     description: "Space enthusiast who loves creating and building things.",
-    url: "https://wwww.huseyinapa.com",
+    url: "https://www.huseyinapa.com",
     siteName: "huseyinapa.com",
     images: [
       {
-        url: "https://wwww.huseyinapa.com/favicon.png",
+        url: "https://www.huseyinapa.com/favicon.png",
         width: 1920,
         height: 1080,
       },

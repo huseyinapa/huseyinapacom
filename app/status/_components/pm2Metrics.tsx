@@ -11,8 +11,8 @@ interface PM2Metric {
   pm2_env: {
     status: string;
     restart_time: number;
-    uptime: number;
   };
+  uptime: any;
 }
 
 const PM2Metrics: React.FC = () => {
@@ -51,7 +51,7 @@ const PM2Metrics: React.FC = () => {
                 MB
               </p>
               <p>
-                Uptime: {Math.floor(metric.pm2_env.uptime / 1000 / 60)} minutes
+                Uptime: {metric.uptime}
               </p>
               <p>Restart Count: {metric.pm2_env.restart_time}</p>
             </div>

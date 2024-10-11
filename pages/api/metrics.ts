@@ -3,28 +3,46 @@ import { exec } from "child_process";
 
 const SSH_USER = "ubuntu"; // SSH kullanıcı adı
 const SSH_HOST = "3.130.155.44"; // Sunucu IP adresi veya alan adı
-const PEM_PATH = "C:/Users/admin/Desktop/servers/huseyinapa/huseyinapa.pem"; // PEM dosyasının tam yolu (örneğin: /Users/admin/.ssh/huseyinapa.pem)
-const PM2_COMMAND_SSH = `ssh -i "${PEM_PATH}" ${SSH_USER}@${SSH_HOST} "source ~/.nvm/nvm.sh && pm2 jlist"`; // PEM dosyasını kullanarak sunucuya bağlan ve nvm ortamını yükledikten sonra pm2 jlist komutunu çalıştır
-const PM2_COMMAND_LOCAL = `pm2 jlist`; // PM2 komutunu sunucuda doğrudan çalıştır
+const PEM_PATH = "C:/Users/admin/Desktop/servers/huseyinapa/huseyinapa.pem"; // PEM dosyasının tam yolu
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  let commandToExecute: string;
-
+// PM2 komutunu oluşturma
+const getPM2Command = () => {
   if (process.env.NODE_ENV === "development") {
     console.log(
       "Development mode: SSH ile sunucuya bağlanıp PM2 metriklerini alıyoruz."
     );
-    // Development modunda, SSH kullanarak uzak sunucuya bağlan
-    commandToExecute = PM2_COMMAND_SSH;
+    return `ssh -i "${PEM_PATH}" ${SSH_USER}@${SSH_HOST} "source ~/.nvm/nvm.sh && pm2 jlist"`;
   } else {
     console.log(
       "Production mode: Sunucuda doğrudan PM2 komutunu çalıştırıyoruz."
     );
-    // Production modunda, sunucuda doğrudan PM2 komutunu çalıştır
-    commandToExecute = PM2_COMMAND_LOCAL;
+    return `pm2 jlist`;
   }
+};
 
-  // Belirlenen komutu çalıştırıyoruz
+// Uptime hesaplama fonksiyonu
+const calculateUptime = (pm_uptime: number): string => {
+  const currentTime = Date.now();
+  const uptimeDurationInMinutes = (currentTime - pm_uptime) / 60000;
+
+  if (uptimeDurationInMinutes < 60) {
+    return `${uptimeDurationInMinutes.toFixed(2)} dakika`;
+  } else if (uptimeDurationInMinutes < 1440) {
+    const hours = Math.floor(uptimeDurationInMinutes / 60);
+    const minutes = Math.floor(uptimeDurationInMinutes % 60);
+    return `${hours} saat ${minutes} dakika`;
+  } else {
+    const days = Math.floor(uptimeDurationInMinutes / 1440);
+    const remainingMinutes = uptimeDurationInMinutes % 1440;
+    const hours = Math.floor(remainingMinutes / 60);
+    const minutes = Math.floor(remainingMinutes % 60);
+    return `${days} gün ${hours} saat ${minutes} dakika`;
+  }
+};
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  const commandToExecute = getPM2Command();
+
   exec(commandToExecute, (error, stdout, stderr) => {
     if (error) {
       console.error("Metrics retrieval failed:", stderr);
@@ -32,7 +50,20 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     }
     try {
       const metrics = JSON.parse(stdout);
-      res.status(200).json(metrics);
+
+      const enhancedMetrics = metrics.map((service: any) => {
+        if (
+          service.pm2_env?.pm_uptime &&
+          service.pm2_env.pm_uptime > 1000000000000
+        ) {
+          service.uptime = calculateUptime(service.pm2_env.pm_uptime);
+        } else {
+          service.uptime = "Geçersiz uptime değeri";
+        }
+        return service;
+      });
+
+      res.status(200).json(enhancedMetrics);
     } catch (parseError) {
       console.error("Error parsing metrics:", parseError);
       res.status(500).json({ error: "Error parsing metrics" });

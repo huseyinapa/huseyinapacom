@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 import { ServiceStatus } from "@/app/types/status"; // Yolunuzu ayarlayın
-import { services } from "@/util/services"; // Yolunuzu ayarlayın
+import { services } from "@/utils/services"; // Yolunuzu ayarlayın
 
 export default async function handler(
   req: NextApiRequest,

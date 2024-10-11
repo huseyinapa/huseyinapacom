@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ServiceTimeline from "@/app/status/_components/statusTimeLine";
+import PM2Metrics from "./_components/pm2Metrics";
 
 interface StatusDay {
     date: string;
@@ -49,6 +50,9 @@ const StatusPage: React.FC = () => {
                     statusDays={service.statusDays}
                 />
             ))}
+
+            <h1 className="text-3xl font-bold mb-6">PM2 Bilgi Konsolu</h1>
+            <PM2Metrics />
         </div>
     );
 };

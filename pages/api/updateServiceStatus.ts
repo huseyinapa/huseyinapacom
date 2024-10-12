@@ -11,7 +11,7 @@ export default async function handler(
       {
         name: "Ana Site",
         url: "https://www.huseyinapa.com",
-        statusApi: "https://www.huseyinapa.com/status.php",
+        statusApi: "https://www.gonenkleopatra.com/status.php",
         category: "Website",
       },
       {

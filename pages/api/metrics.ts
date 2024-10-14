@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { exec } from "child_process";
 
-const SSH_USER = "ubuntu"; // SSH kullanıcı adı
-const SSH_HOST = "3.130.155.44"; // Sunucu IP adresi veya alan adı
-const PEM_PATH = "C:/Users/admin/Desktop/servers/huseyinapa/huseyinapa.pem"; // PEM dosyasının tam yolu
+const SSH_USER = process.env.SSH_USER;
+const SSH_HOST = process.env.SSH_HOST;
+const PEM_PATH = process.env.PEM_PATH;
 
 // PM2 komutunu oluşturma
 const getPM2Command = () => {
@@ -43,7 +43,7 @@ const calculateUptime = (pm_uptime: number): string => {
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const commandToExecute = getPM2Command();
 
-  exec(commandToExecute, (error, stdout, stderr) => {
+  exec(commandToExecute, { timeout: 10000 }, (error, stdout, stderr) => {
     if (error) {
       console.error("Metrics retrieval failed:", stderr);
       return res.status(500).json({ error: "Metrics retrieval failed" });

@@ -10,8 +10,8 @@ export async function sendSMSNotification(message: string) {
   try {
     const sms = await client.messages.create({
       body: message,
-      from: "+14054588595", // Twilio numaranız
-      to: process.env.MY_NUMBER!.toString(), // Hedef telefon numarası
+      from: process.env.TW_NUMBER, // Twilio numaranız
+      to: process.env.PHONE_NUMBER, // Hedef telefon numarası
     });
     console.log(`SMS sent: ${sms.sid}`);
   } catch (error) {

@@ -15,7 +15,7 @@ pm2.launchBus((err, bus) => {
 
             // Burada ilgili curl komutunu tetikleyebilirsiniz
             const { exec } = require('child_process');
-            const webhookUrl = `https://b8e8-95-12-115-113.ngrok-free.app/api/webhook`;
+            const webhookUrl = `https://typically-lenient-sailfish.ngrok-free.app/api/webhook`;
             const payload = JSON.stringify({ event: eventName, process: { name: processName } });
             const command = `curl -X POST ${webhookUrl} -H 'Content-Type: application/json' -d '${payload}'`;
 

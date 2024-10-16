@@ -1,10 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma"; // Prisma veritabanı bağlantısı
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export async function GET(req: NextRequest) {
   try {
     const services = await prisma.service.findMany({
       include: {
@@ -36,8 +33,12 @@ export default async function handler(
       };
     });
 
-    res.status(200).json(serviceTimelines);
+    return NextResponse.json(serviceTimelines, { status: 200 });
   } catch (error) {
-    res.status(500).json({ error: "Service status logs retrieval failed." });
+    console.error("Error in service status retrieval:", error);
+    return NextResponse.json(
+      { error: "Service status logs retrieval failed." },
+      { status: 500 }
+    );
   }
 }

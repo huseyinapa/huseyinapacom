@@ -9,7 +9,7 @@ export function executePM2Command(
   retryCount = 0,
   maxRetries = 2
 ) {
-  const validActions = ["restart", "stop", "start", "delete", "status"];
+  const validActions = ["restart", "stop", "start", "delete", "status", "list"];
   if (!validActions.includes(action)) {
     throw new Error(
       `Geçersiz aksiyon: ${action}. Geçerli aksiyonlar: ${validActions.join(

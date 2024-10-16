@@ -1,11 +1,8 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma"; // Veritabanı bağlantısını kontrol etmek için örnek
 import { services } from "@/utils/services"; // Servisleri içe aktarma
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export async function GET(req: NextRequest) {
   try {
     const healthChecks = await Promise.all(
       services.map(
@@ -33,14 +30,21 @@ export default async function handler(
     );
 
     if (allHealthy) {
-      res.status(200).json({ status: "UP", services: healthChecks });
+      return NextResponse.json(
+        { status: "UP", services: healthChecks },
+        { status: 200 }
+      );
     } else {
-      res.status(503).json({ status: "DOWN", services: healthChecks });
+      return NextResponse.json(
+        { status: "DOWN", services: healthChecks },
+        { status: 503 }
+      );
     }
   } catch (error) {
     console.error("Health check failed:", error);
-    res
-      .status(500)
-      .json({ status: "DOWN", message: "Service is currently unavailable" });
+    return NextResponse.json(
+      { status: "DOWN", message: "Service is currently unavailable" },
+      { status: 500 }
+    );
   }
 }

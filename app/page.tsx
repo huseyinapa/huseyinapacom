@@ -5,6 +5,9 @@ import React, { useEffect } from "react";
 import Particles from "./components/particles";
 import axios from "axios";
 
+// import "../cron/scheduler";
+// import "../cron/updateServiceStatus";
+
 const navigation = [
   { name: "Projects", href: "/projects" },
   { name: "Contact", href: "/contact" },
@@ -14,7 +17,9 @@ export default function Home() {
   useEffect(() => {
     const initializeServices = async () => {
       try {
-        await axios.get('/api/updateServiceStatus');
+        await axios.get('/api/updateServiceStatus'); // /api/updateServiceStatus 405 hatası veriyor
+        await axios.post("/api/system");
+
         console.log("Initial service data added");
       } catch (error) {
         console.error("Failed to initialize service data:", error);

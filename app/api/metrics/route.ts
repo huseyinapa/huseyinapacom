@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import { exec } from "child_process";
 
 const SSH_USER = process.env.SSH_USER;
@@ -40,33 +40,43 @@ const calculateUptime = (pm_uptime: number): string => {
   }
 };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+// PM2 metrics API
+export async function GET(req: NextRequest) {
   const commandToExecute = getPM2Command();
 
-  exec(commandToExecute, { timeout: 10000 }, (error, stdout, stderr) => {
-    if (error) {
-      console.error("Metrics retrieval failed:", stderr);
-      return res.status(500).json({ error: "Metrics retrieval failed" });
-    }
-    try {
-      const metrics = JSON.parse(stdout);
+  return new Promise((resolve) => {
+    exec(commandToExecute, { timeout: 10000 }, (error, stdout, stderr) => {
+      if (error) {
+        console.error("Metrics retrieval failed:", stderr);
+        return resolve(
+          NextResponse.json(
+            { error: "Metrics retrieval failed" },
+            { status: 500 }
+          )
+        );
+      }
+      try {
+        const metrics = JSON.parse(stdout);
 
-      const enhancedMetrics = metrics.map((service: any) => {
-        if (
-          service.pm2_env?.pm_uptime &&
-          service.pm2_env.pm_uptime > 1000000000000
-        ) {
-          service.uptime = calculateUptime(service.pm2_env.pm_uptime);
-        } else {
-          service.uptime = "Geçersiz uptime değeri";
-        }
-        return service;
-      });
+        const enhancedMetrics = metrics.map((service: any) => {
+          if (
+            service.pm2_env?.pm_uptime &&
+            service.pm2_env.pm_uptime > 1000000000000
+          ) {
+            service.uptime = calculateUptime(service.pm2_env.pm_uptime);
+          } else {
+            service.uptime = "Geçersiz uptime değeri";
+          }
+          return service;
+        });
 
-      res.status(200).json(enhancedMetrics);
-    } catch (parseError) {
-      console.error("Error parsing metrics:", parseError);
-      res.status(500).json({ error: "Error parsing metrics" });
-    }
+        resolve(NextResponse.json(enhancedMetrics));
+      } catch (parseError) {
+        console.error("Error parsing metrics:", parseError);
+        resolve(
+          NextResponse.json({ error: "Error parsing metrics" }, { status: 500 })
+        );
+      }
+    });
   });
 }

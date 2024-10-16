@@ -5,8 +5,8 @@ let channel: amqp.Channel;
 
 const isDevelopment = process.env.NODE_ENV === "development";
 const rabbitMQUrl = isDevelopment
-  ? process.env.RABBITMQ_URL_DEV
-  : process.env.RABBITMQ_URL_PROD;
+  ? `amqp://${process.env.URL_DEV}`
+  : `amqp://${process.env.URL_PROD}`;
 
 export async function connectRabbitMQ() {
   try {

@@ -8,6 +8,8 @@ cron.schedule("*/5 * * * *", async () => {
   try {
     console.log("Health check tetikleyici çalıştırılıyor...");
     await axios.get("/api/monitor/healthCheck");
+
+    await axios.post("/api/system");
   } catch (error) {
     console.error("Health check tetiklenemedi:", error);
   }

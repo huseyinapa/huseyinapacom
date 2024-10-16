@@ -9,12 +9,12 @@ declare global {
       TW_NUMBER: string;
       PHONE_NUMBER: string;
 
-      RABBITMQ_URL_DEV: string;
-      RABBITMQ_URL_PROD: string;
+      URL_DEV: string;
+      URL_PROD: string;
 
-      PEM_PATH: string;
       SSH_USER: string;
       SSH_HOST: string;
+      PEM_PATH: string;
     }
   }
 }

@@ -4,7 +4,7 @@ export const services: Service[] = [
   {
     name: "Ana Site",
     url: "https://www.huseyinapa.com",
-    statusApi: "https://www.huseyinapa.com/status.php",
+    statusApi: "https://www.gonenkleopatra.com/status.php",
     category: "Website",
   },
   {
@@ -31,5 +31,4 @@ export const services: Service[] = [
     statusApi: "https://www.gonenkleopatra.com/status.php",
     category: "API",
   },
-  // Diğer hizmetler...
 ];

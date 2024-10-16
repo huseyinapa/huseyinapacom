@@ -1,45 +1,10 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import prisma from "@/lib/prisma"; // Prisma veritabanı bağlantısı
+import { services } from "@/utils/services";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export async function POST(req: NextRequest) {
   try {
-    const services = [
-      {
-        name: "Ana Site",
-        url: "https://www.huseyinapa.com",
-        statusApi: "https://www.gonenkleopatra.com/status.php",
-        category: "Website",
-      },
-      {
-        name: "Kleopatra",
-        url: "https://www.gonenkleopatra.com",
-        statusApi: "https://www.gonenkleopatra.com/status.php",
-        category: "Website",
-      },
-      {
-        name: "Kleopatra Ödeme",
-        url: "https://api.gonenkleopatra.com",
-        statusApi: "https://www.gonenkleopatra.com/status.php",
-        category: "Ödeme",
-      },
-      {
-        name: "Gülgönen",
-        url: "https://www.gulgonenkoop.com",
-        statusApi: "https://www.gonenkleopatra.com/status.php",
-        category: "Website",
-      },
-      {
-        name: "Gülgönen API",
-        url: "https://api.gulgonenkoop.com",
-        statusApi: "https://www.gonenkleopatra.com/status.php",
-        category: "API",
-      },
-    ];
-
     for (const service of services) {
       let status = "Operational";
       let duration = null;
@@ -113,9 +78,14 @@ export default async function handler(
       }
     }
 
-    res.status(200).json({ message: "Service statuses updated successfully." });
+    return NextResponse.json({
+      message: "Service statuses updated successfully.",
+    });
   } catch (error) {
     console.error("Hizmet durumları güncellenemedi:", error);
-    res.status(500).json({ error: "Service status update failed." });
+    return NextResponse.json(
+      { error: "Service status update failed." },
+      { status: 500 }
+    );
   }
 }

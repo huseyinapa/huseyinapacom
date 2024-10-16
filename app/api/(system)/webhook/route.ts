@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendSMSNotification } from "@/services/notificationService"; // SMS ve e-posta gönderimi için yardımcı fonksiyonlar
 import axios from "axios";
+import { url } from "inspector";
 
 // Webhook handler
 const eventProcessesMap: { [key: string]: string[] } = {
@@ -61,13 +62,9 @@ export async function POST(req: NextRequest) {
       // Eğer olay türü "stop" veya "errored" ise, müdahale işlemini tetikle
       if (eventType === "stop" || eventType === "errored") {
         try {
-          const webhookUrl =
-            process.env.NODE_ENV === "development"
-              ? `http://localhost:3000/api/interventionHandler`
-              : `/api/interventionHandler`;
-          console.log("Müdahale işlemi tetikleniyor:", webhookUrl);
+          console.log("Müdahale işlemi tetikleniyor:", appName);
 
-          await axios.post(webhookUrl, {
+          await axios.post(`${url}/api/interventionHandler`, {
             action: "restart",
             processName: appName,
           });

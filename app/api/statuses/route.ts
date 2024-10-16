@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
-import { ServiceStatus } from "@/app/types/status"; // Yolunuzu ayarlayın
+import { ServiceStatus } from "@/types/status"; // Yolunuzu ayarlayın
 import { services } from "@/utils/services"; // Yolunuzu ayarlayın
 
 export async function GET(req: NextRequest) {

@@ -1,22 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { exec } from "child_process";
-import { connectRabbitMQ } from "@/utils/rabbitmq";
 
 const SSH_USER = process.env.SSH_USER;
 const SSH_HOST = process.env.SSH_HOST;
 const PEM_PATH = process.env.PEM_PATH;
 
 let manualActions: Record<string, boolean> = {};
-
-// RabbitMQ kuyruğuna bağlantı ve mesaj gönderme
-const sendToRabbitMQ = async (queue: string, message: object) => {
-  try {
-    await sendToRabbitMQ(queue, Buffer.from(JSON.stringify(message)));
-    console.log("RabbitMQ'ya mesaj gönderildi:", message);
-  } catch (error) {
-    console.error("RabbitMQ'ya mesaj gönderilemedi:", error);
-  }
-};
 
 // PM2 komutunu oluşturma
 const getCommandToExecute = (action: string, processName: string) => {
@@ -48,22 +37,22 @@ const executePM2Command = (
     if (error) {
       console.error("PM2 intervention failed:", stderr);
       // RabbitMQ'ya başarısızlığı kaydet
-      await sendToRabbitMQ("pm2-events", {
-        event: "intervention_failed",
-        processName,
-        action,
-        timestamp: new Date(),
-      });
+      // await sendToRabbitMQ("pm2-events", {
+      //   event: "intervention_failed",
+      //   processName,
+      //   action,
+      //   timestamp: new Date(),
+      // });
       return;
     }
     console.log("PM2 intervention success:", stdout);
     // RabbitMQ'ya başarıyı kaydet
-    await sendToRabbitMQ("pm2-events", {
-      event: "intervention_succeeded",
-      processName,
-      action,
-      timestamp: new Date(),
-    });
+    // await sendToRabbitMQ("pm2-events", {
+    //   event: "intervention_succeeded",
+    //   processName,
+    //   action,
+    //   timestamp: new Date(),
+    // });
   });
 };
 
@@ -97,12 +86,12 @@ export async function POST(req: NextRequest) {
     executePM2Command(commandToExecute, processName, action);
 
     // RabbitMQ'ya müdahale başlatıldı mesajı gönder
-    await sendToRabbitMQ("pm2-events", {
-      event: "intervention_started",
-      processName,
-      action,
-      timestamp: new Date(),
-    });
+    // await sendToRabbitMQ("pm2-events", {
+    //   event: "intervention_started",
+    //   processName,
+    //   action,
+    //   timestamp: new Date(),
+    // });
 
     // Eğer manuel bir müdahale yapılıyorsa, durumu kaydet
     if (action === "stop") {

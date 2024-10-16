@@ -38,6 +38,8 @@ export function middleware(request: NextRequest) {
     response.headers.set(key, value);
   });
 
+  console.log("Request:", request.url, request.method);
+
   return response;
 }
 

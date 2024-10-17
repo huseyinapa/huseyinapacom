@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { services } from "@/utils/services";
-import { url } from "../cronJob/route";
+import { url } from "@/utils/api";
 
 // PM2 müdahale fonksiyonu
 const initiateIntervention = async (processName: string) => {
@@ -11,20 +11,36 @@ const initiateIntervention = async (processName: string) => {
       action: "restart",
       processName,
     });
-    console.log(
-      `Müdahale ${processName} için başlatıldı.` // ve RabbitMQ'ya kaydedildi.
-    );
+    console.log(`Müdahale ${processName} için başlatıldı.`);
   } catch (error) {
     console.error("Müdahale işlemi başarısız oldu:", error);
   }
 };
 
 // Sistem kontrolü ve müdahale başlatma
-export async function POST(req: NextRequest) {
+export async function GET() {
   try {
-    // api/health endpoint'ine istek gönder
-    const healthResponse = await axios.get(`${url}/api/health`);
-    const healthData = healthResponse.data;
+    let healthData;
+
+    try {
+      // api/health endpoint'ine istek gönder
+      const healthResponse = await axios.get(`${url}/api/health`);
+      healthData = healthResponse.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        // Eğer hata 503 ise, healthData'yı error.response.data'dan alabiliriz
+        if (error.response.status === 503) {
+          healthData = error.response.data;
+        } else {
+          // Başka bir hata ise, hatayı tekrar fırlat
+          throw error;
+        }
+      } else {
+        throw error;
+      }
+    }
+
+    console.log("Sistem kontrolü:", healthData);
 
     // Eğer sistem DOWN ise, ilgili servisler için müdahale başlat
     if (healthData.status === "DOWN") {
@@ -51,7 +67,11 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "Sistem kontrolü tamamlandı." });
   } catch (error) {
-    console.error("Sistem kontrolü hatası:", error);
+    if (axios.isAxiosError(error)) {
+      console.error("Sistem kontrolü hatası:", error.response?.data);
+    } else {
+      console.error("Sistem kontrolü hatası:", error);
+    }
     return NextResponse.json(
       { error: "Sistem kontrolü hatası oluştu." },
       { status: 500 }

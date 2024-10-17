@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendSMSNotification } from "@/services/notificationService"; // SMS ve e-posta gönderimi için yardımcı fonksiyonlar
 import axios from "axios";
-import { url } from "inspector";
+import { url } from "@/utils/api";
 
 // Webhook handler
 const eventProcessesMap: { [key: string]: string[] } = {

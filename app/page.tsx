@@ -15,7 +15,7 @@ export default function Home() {
     const initializeServices = async () => {
       try {
         await axios.post('/api/updateServiceStatus');
-        await axios.post("/api/system");
+        // await axios.get("/api/system");
         await axios.get("/api/cronJob");
 
         console.log("Initial service data added");

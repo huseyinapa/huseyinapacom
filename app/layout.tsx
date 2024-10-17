@@ -71,6 +71,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="tr" className={[inter.variable, calSans.variable].join(" ")}>
       <body

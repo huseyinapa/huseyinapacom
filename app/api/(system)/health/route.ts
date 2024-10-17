@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma"; // Veritabanı bağlantısını kontrol etmek için örnek
 import { services } from "@/utils/services"; // Servisleri içe aktarma
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const healthChecks = await Promise.all(
       services.map(

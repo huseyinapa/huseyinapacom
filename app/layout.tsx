@@ -71,12 +71,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="tr" className={[inter.variable, calSans.variable].join(" ")}>
       <body
-        className={`${process.env.NODE_ENV === "development" ? "debug-screens" : undefined
-          }`}
+        className={`${
+          process.env.NODE_ENV === "development" ? "debug-screens" : undefined
+        }`}
       >
         {children}
       </body>
